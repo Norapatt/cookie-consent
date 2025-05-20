@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cookie Consent Fullscreen</title>
+  <style>
+    #cookie-consent-popup {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0, 0, 0, 0.85);
+      color: white;
+      font-family: Arial, sans-serif;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+      text-align: center;
+    }
+
+    #cookie-consent-popup .content {
+      max-width: 400px;
+      background-color: #222;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.2);
+    }
+
+    #cookie-consent-popup img {
+      width: 150px;
+      margin-bottom: 20px;
+    }
+
+    #cookie-consent-popup p {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      cursor: pointer;
+      user-select: none;
+      margin-bottom: 20px;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 12px;
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+    }
+
+    button#accept-cookies {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      font-size: 18px;
+      padding: 12px 30px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+
+    button#accept-cookies:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cookie-consent-popup" role="dialog" aria-modal="true" aria-labelledby="cookie-title" aria-describedby="cookie-desc">
+    <div class="content">
+      <img src="https://i.postimg.cc/Xp49y5m0/logo.png" alt="กูโรตีชาชัก โลโก้" />
+      <p id="cookie-desc">เว็บไซต์นี้ใช้คุกกี้เพื่อปรับปรุงประสบการณ์ของคุณ</p>
+      <label>
+        <input type="checkbox" id="accept-checkbox" />
+        ยอมรับคุกกี้ทั้งหมด
+      </label>
+      <button id="accept-cookies" disabled>Accept All Cookies</button>
+    </div>
+  </div>
+
+  <script>
+    function setCookie(name, value, days) {
+      const d = new Date();
+      d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+      const expires = "expires=" + d.toUTCString();
+      document.cookie = name + "=" + value + ";" + expires + ";path=/";
+    }
+
+    function getCookie(name) {
+      const cname = name + "=";
+      const decodedCookie = decodeURIComponent(document.cookie);
+      const ca = decodedCookie.split(";");
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === " ") c = c.substring(1);
+        if (c.indexOf(cname) === 0) return c.substring(cname.length, c.length);
+      }
+      return "";
+    }
+
+    window.onload = function () {
+      if (!getCookie("cookieAccepted")) {
+        document.getElementById("cookie-consent-popup").style.display = "flex";
+      } else {
+        document.getElementById("cookie-consent-popup").style.display = "none";
+      }
+    };
+
+    const checkbox = document.getElementById("accept-checkbox");
+    const btnAccept = document.getElementById("accept-cookies");
+
+    checkbox.addEventListener("change", function () {
+      btnAccept.disabled = !this.checked;
+    });
+
+    btnAccept.addEventListener("click", function () {
+      if (checkbox.checked) {
+        setCookie("cookieAccepted", "true", 365);
+        window.location.href = "https://guroti469.com/Main";
+      }
+    });
+  </script>
+
+</body>
+</html>
