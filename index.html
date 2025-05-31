@@ -10,6 +10,7 @@
   <link rel="apple-touch-icon" href="https://i.postimg.cc/Xp49y5m0/logo.png" />
 
   <style>
+    /* ===== สไตล์ของ Popup ===== */
     #cookie-consent-popup {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -17,7 +18,7 @@
       color: white;
       font-family: Arial, sans-serif;
       z-index: 99999;
-      display: flex;
+      display: none; /* เริ่มต้นซ่อนก่อน */
       flex-direction: column;
       justify-content: center;
       align-items: center;
@@ -78,6 +79,7 @@
 </head>
 <body>
 
+  <!-- ===== โครงสร้างของ Cookie Consent Popup ===== -->
   <div id="cookie-consent-popup" role="dialog" aria-modal="true" aria-labelledby="cookie-title" aria-describedby="cookie-desc">
     <div class="content">
       <img src="https://i.postimg.cc/Xp49y5m0/logo.png" alt="กูโรตีชาชัก โลโก้" />
@@ -91,6 +93,7 @@
   </div>
 
   <script>
+    // ตั้งคุกกี้ (ชื่อ, ค่า, อายุเป็นวัน)
     function setCookie(name, value, days) {
       const d = new Date();
       d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
@@ -98,36 +101,41 @@
       document.cookie = name + "=" + value + ";" + expires + ";path=/";
     }
 
+    // อ่านคุกกี้ (คืนค่าเป็นสตริง ถ้าไม่เจอคืน "" )
     function getCookie(name) {
       const cname = name + "=";
-      const decodedCookie = decodeURIComponent(document.cookie);
-      const ca = decodedCookie.split(";");
+      const decoded = decodeURIComponent(document.cookie);
+      const ca = decoded.split(";");
       for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === " ") c = c.substring(1);
-        if (c.indexOf(cname) === 0) return c.substring(cname.length, c.length);
+        let c = ca[i].trim();
+        if (c.indexOf(cname) === 0) return c.substring(cname.length);
       }
       return "";
     }
 
     window.onload = function () {
-      if (!getCookie("cookieAccepted")) {
-        document.getElementById("cookie-consent-popup").style.display = "flex";
+      // ถ้ามีคุกกี้ cookieAccepted แล้ว ให้ redirect ทันที
+      if (getCookie("cookieAccepted") === "true") {
+        window.location.href = "https://sites.google.com/view/guroti469?usp=sharing";
       } else {
-        document.getElementById("cookie-consent-popup").style.display = "none";
+        // ถ้ายังไม่มีคุกกี้ ให้แสดง popup
+        document.getElementById("cookie-consent-popup").style.display = "flex";
       }
     };
 
+    // จับ event เมื่อเปลี่ยนสถานะ checkbox
     const checkbox = document.getElementById("accept-checkbox");
     const btnAccept = document.getElementById("accept-cookies");
-
     checkbox.addEventListener("change", function () {
       btnAccept.disabled = !this.checked;
     });
 
+    // เมื่อคลิก Accept All Cookies
     btnAccept.addEventListener("click", function () {
       if (checkbox.checked) {
+        // ตั้งคุกกี้ให้มีอายุ 365 วัน
         setCookie("cookieAccepted", "true", 365);
+        // แล้ว redirect ไป Google Site
         window.location.href = "https://sites.google.com/view/guroti469?usp=sharing";
       }
     });
@@ -135,3 +143,4 @@
 
 </body>
 </html>
+
