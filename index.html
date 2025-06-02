@@ -10,32 +10,49 @@
   <link rel="apple-touch-icon" href="https://i.postimg.cc/Xp49y5m0/logo.png" />
 
   <style>
-    /* ===== สไตล์ของ Popup ===== */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Background image */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('https://i.postimg.cc/TPLZ8w3v/5.png') no-repeat center center fixed;
+      background-size: cover;
+      filter: brightness(1);
+      z-index: -1;
+    }
+
     #cookie-consent-popup {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(0, 0, 0, 0.85);
+      background-color: transparent; /* ไม่บังพื้นหลัง */
       color: white;
-      font-family: Arial, sans-serif;
-      z-index: 99999;
-      display: none; /* เริ่มต้นซ่อนก่อน */
-      flex-direction: column;
+      z-index: 9999;
+      display: flex;
       justify-content: center;
       align-items: center;
-      padding: 30px;
+      padding: 20px;
       text-align: center;
     }
 
     #cookie-consent-popup .content {
-      max-width: 400px;
-      background-color: #222;
+      background-color: rgba(0, 0, 0, 0.4); /* โปร่งใส */
       padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(255,255,255,0.2);
+      border-radius: 12px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 15px rgba(255,255,255,0.3);
+      backdrop-filter: blur(4px); /* ทำให้เนียนและสวย */
     }
 
     #cookie-consent-popup img {
-      width: 150px;
+      width: 120px;
       margin-bottom: 20px;
     }
 
@@ -55,8 +72,8 @@
 
     input[type="checkbox"] {
       margin-right: 12px;
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       cursor: pointer;
     }
 
@@ -65,11 +82,11 @@
       border: none;
       color: white;
       font-size: 18px;
-      padding: 12px 30px;
+      padding: 10px 25px;
       border-radius: 6px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
       width: 100%;
+      transition: background-color 0.3s ease;
     }
 
     button#accept-cookies:hover {
@@ -79,7 +96,6 @@
 </head>
 <body>
 
-  <!-- ===== โครงสร้างของ Cookie Consent Popup ===== -->
   <div id="cookie-consent-popup" role="dialog" aria-modal="true" aria-labelledby="cookie-title" aria-describedby="cookie-desc">
     <div class="content">
       <img src="https://i.postimg.cc/Xp49y5m0/logo.png" alt="กูโรตีชาชัก โลโก้" />
@@ -93,7 +109,6 @@
   </div>
 
   <script>
-    // ตั้งคุกกี้ (ชื่อ, ค่า, อายุเป็นวัน)
     function setCookie(name, value, days) {
       const d = new Date();
       d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
@@ -101,41 +116,36 @@
       document.cookie = name + "=" + value + ";" + expires + ";path=/";
     }
 
-    // อ่านคุกกี้ (คืนค่าเป็นสตริง ถ้าไม่เจอคืน "" )
     function getCookie(name) {
       const cname = name + "=";
-      const decoded = decodeURIComponent(document.cookie);
-      const ca = decoded.split(";");
+      const decodedCookie = decodeURIComponent(document.cookie);
+      const ca = decodedCookie.split(";");
       for (let i = 0; i < ca.length; i++) {
-        let c = ca[i].trim();
-        if (c.indexOf(cname) === 0) return c.substring(cname.length);
+        let c = ca[i];
+        while (c.charAt(0) === " ") c = c.substring(1);
+        if (c.indexOf(cname) === 0) return c.substring(cname.length, c.length);
       }
       return "";
     }
 
     window.onload = function () {
-      // ถ้ามีคุกกี้ cookieAccepted แล้ว ให้ redirect ทันที
-      if (getCookie("cookieAccepted") === "true") {
-        window.location.href = "https://sites.google.com/view/guroti469?usp=sharing";
-      } else {
-        // ถ้ายังไม่มีคุกกี้ ให้แสดง popup
+      if (!getCookie("cookieAccepted")) {
         document.getElementById("cookie-consent-popup").style.display = "flex";
+      } else {
+        document.getElementById("cookie-consent-popup").style.display = "none";
       }
     };
 
-    // จับ event เมื่อเปลี่ยนสถานะ checkbox
     const checkbox = document.getElementById("accept-checkbox");
     const btnAccept = document.getElementById("accept-cookies");
+
     checkbox.addEventListener("change", function () {
       btnAccept.disabled = !this.checked;
     });
 
-    // เมื่อคลิก Accept All Cookies
     btnAccept.addEventListener("click", function () {
       if (checkbox.checked) {
-        // ตั้งคุกกี้ให้มีอายุ 365 วัน
         setCookie("cookieAccepted", "true", 365);
-        // แล้ว redirect ไป Google Site
         window.location.href = "https://sites.google.com/view/guroti469?usp=sharing";
       }
     });
@@ -143,4 +153,5 @@
 
 </body>
 </html>
+
 
